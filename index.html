@@ -110,7 +110,7 @@ function fit(){
 }
 function sty(e, b){
   const im = b.img_p || b.img;
-  e.style.cssText = `left:calc(${b.x}px*var(--k));top:calc(${b.y}px*var(--k));width:calc(${b.w}px*var(--k));height:calc(${b.h}px*var(--k));min-height:calc(${b.h}px*var(--k));background-color:${b.bg || "transparent"};color:${b.color};font-size:calc(${b.fs}px*var(--f));border-radius:calc(${b.r}px*var(--f));text-align:${b.align};font-weight:${b.bold ? 700 : 400};order:${b._o || 0}`
+  e.style.cssText = `${b.full ? "left:calc(50% - 50vw);width:100vw;" : `left:calc(${b.x}px*var(--k));width:calc(${b.w}px*var(--k));`}top:calc(${b.y}px*var(--k));height:calc(${b.h}px*var(--k));min-height:calc(${b.h}px*var(--k));background-color:${b.bg || "transparent"};color:${b.color};font-size:calc(${b.fs}px*var(--f));border-radius:calc(${b.r}px*var(--f));text-align:${b.align};font-weight:${b.bold ? 700 : 400};order:${b._o || 0}`
     + (im ? `;background-image:url("${im.replace(/"/g, "%22")}");background-size:cover;background-position:center` : "");
 }
 function boxEl(b){
@@ -128,13 +128,19 @@ function boxEl(b){
   } else e.appendChild(t);
   sty(e, b); return e;
 }
+function applyBg(){
+  const p = pg(), im = p.img_p || p.img, s = document.body.style;
+  s.backgroundColor = p.bg || "#fff";
+  s.backgroundImage = im ? `url("${im.replace(/"/g, "%22")}")` : "";
+  s.backgroundSize = "cover"; s.backgroundPosition = "center top"; s.backgroundAttachment = "fixed"; s.backgroundRepeat = "no-repeat";
+}
 function render(){
   const st = $("#stage"); st.innerHTML = "";
   const bs = pg().boxes;
   [...bs].sort((a, b) => a.y - b.y || a.x - b.x).forEach((b, i) => b._o = i);
   bs.forEach(b => st.appendChild(boxEl(b)));
   document.body.classList.toggle("editing", editing);
-  document.body.style.background = pg().bg || "#fff";
+  applyBg();
   document.title = data.title || "Mi sitio";
   ["#bar", "#pb", "#panel"].forEach(s => $(s).hidden = !editing);
   layout();
@@ -151,8 +157,8 @@ function drag(ev, b, e, mode){
   const sx = ev.clientX, sy = ev.clientY, o = {x:b.x, y:b.y, w:b.w, h:b.h};
   const mv = m => {
     const dx = (m.clientX - sx) / k, dy = (m.clientY - sy) / k;
-    if (mode === "m"){ b.x = snap(clamp(o.x + dx, 0, 1000 - b.w)); b.y = snap(Math.max(0, o.y + dy)); }
-    else { b.w = snap(clamp(o.w + dx, 40, 1000 - b.x)); b.h = snap(Math.max(30, o.h + dy)); }
+    if (mode === "m"){ if (!b.full) b.x = snap(clamp(o.x + dx, 0, 1000 - b.w)); b.y = snap(Math.max(0, o.y + dy)); }
+    else { if (!b.full) b.w = snap(clamp(o.w + dx, 40, 1000 - b.x)); b.h = snap(Math.max(30, o.h + dy)); }
     sty(e, b); fit();
   };
   const up = () => { removeEventListener("pointermove", mv); removeEventListener("pointerup", up); dirty = true; };
@@ -198,8 +204,12 @@ function panel(){
   const p = $("#panel"); p.innerHTML = "";
   const b = pg().boxes.find(x => x.id === sel);
   if (!b){
-    p.append(lab("Color de fondo de la página", colorIn(pg().bg || "#ffffff", v => { pg().bg = v; dirty = true; document.body.style.background = v; })),
-      el("span", null, "Toca un recuadro para editarlo. Se mueve desde ✥ y se agranda desde el círculo de la esquina."));
+    const pu = el("input"); pu.type = "file"; pu.accept = "image/*"; pu.hidden = true; pu.onchange = () => uploadImage(pu.files[0], pg());
+    p.append(lab("Color de fondo de la página", colorIn(pg().bg || "#ffffff", v => { pg().bg = v; dirty = true; applyBg(); })),
+      btn("Subir foto de fondo", () => pu.click()), pu,
+      btn("Foto de fondo por dirección", () => { const u = prompt("Dirección de la imagen (https://…)", pg().img || ""); if (u !== null){ pg().img = u.trim(); pg().img_p = null; dirty = true; applyBg(); panel(); } }));
+    if (pg().img) p.append(btn("Quitar foto de fondo", () => { pg().img = ""; pg().img_p = null; dirty = true; applyBg(); panel(); }));
+    p.append(el("span", null, "Toca un recuadro para editarlo. Se mueve desde ✥ y se agranda desde el círculo de la esquina."));
   } else {
     const re = () => { sty(document.querySelector(`[data-id="${b.id}"]`), b); dirty = true; fit(); };
     const sw = document.createElement("select");
@@ -227,7 +237,7 @@ function panel(){
       const u = prompt("Dirección de la imagen (https://…)", b.img || ""); if (u !== null){ b.img = u.trim(); b.img_p = null; re(); }
     }));
     if (b.img) p.append(btn("Quitar foto", () => { b.img = ""; b.img_p = null; re(); }));
-    p.append(btn("Duplicar", () => { const c = {...JSON.parse(JSON.stringify(b)), id:uid(), x:b.x + 20, y:b.y + 20}; pg().boxes.push(c); sel = c.id; dirty = true; render(); }),
+    p.append(btn("Ancho completo", () => { b.full = !b.full; re(); panel(); }, b.full ? "on" : ""), btn("Duplicar", () => { const c = {...JSON.parse(JSON.stringify(b)), id:uid(), x:b.x + 20, y:b.y + 20}; pg().boxes.push(c); sel = c.id; dirty = true; render(); }),
       btn("Al frente", () => { const a = pg().boxes; a.push(a.splice(a.indexOf(b), 1)[0]); dirty = true; render(); }),
       btn("Borrar", () => { pg().boxes = pg().boxes.filter(x => x !== b); sel = null; dirty = true; render(); }, "dng"));
   }
@@ -265,8 +275,8 @@ function uploadImage(file, b){
       const name = "images/" + Date.now() + "-" + file.name.replace(/[^\w.\-]/g, "_");
       await put(name, rd.result.split(",")[1], "Subir imagen");
       b.img = name; b.img_p = rd.result; dirty = true;
-      sty(document.querySelector(`[data-id="${b.id}"]`), b); panel();
-      setStatus("Imagen subida. Pulsa Publicar cambios para guardar.");
+      if (b.boxes) applyBg(); else sty(document.querySelector(`[data-id="${b.id}"]`), b);
+      panel(); setStatus("Imagen subida. Pulsa Publicar cambios para guardar.");
     }catch(e){ setStatus("Error al subir: " + e.message); }
   };
   rd.readAsDataURL(file);
