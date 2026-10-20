@@ -88,6 +88,44 @@
           "bold": 0,
           "img": "",
           "link": null
+        },
+        {
+          "id": "cmp3us",
+          "x": 325,
+          "y": 665,
+          "w": 300,
+          "h": 200,
+          "text": "Título\nDescripción breve.",
+          "bg": "#e8efff",
+          "color": "#101828",
+          "fs": 20,
+          "r": 16,
+          "align": "left",
+          "bold": 0,
+          "img": "",
+          "link": {
+            "k": "p",
+            "v": "noticia-wcqlkw"
+          }
+        },
+        {
+          "id": "2b2zqb",
+          "x": 0,
+          "y": 190,
+          "w": 335,
+          "h": 40,
+          "text": "noticia de ultimo momento\nDescripción breve.",
+          "bg": "#e8efff",
+          "color": "#101828",
+          "fs": 20,
+          "r": 16,
+          "align": "left",
+          "bold": 0,
+          "img": "",
+          "link": {
+            "k": "p",
+            "v": "noticia-j3qotz"
+          }
         }
       ]
     },
@@ -180,6 +218,48 @@
           "w": 880,
           "h": 110,
           "text": "XDDDDDD\n\n",
+          "bg": "",
+          "color": "#101828",
+          "fs": 52,
+          "r": 0,
+          "align": "left",
+          "bold": 1,
+          "img": "",
+          "link": null
+        }
+      ]
+    },
+    {
+      "id": "noticia-j3qotz",
+      "name": "Noticia",
+      "bg": "#ffffff",
+      "boxes": [
+        {
+          "id": "zzax7t",
+          "x": 60,
+          "y": 40,
+          "w": 200,
+          "h": 50,
+          "text": "← Volver al inicio",
+          "bg": "#101828",
+          "color": "#ffffff",
+          "fs": 16,
+          "r": 10,
+          "align": "center",
+          "bold": 0,
+          "img": "",
+          "link": {
+            "k": "p",
+            "v": "inicio"
+          }
+        },
+        {
+          "id": "rd2wrx",
+          "x": 60,
+          "y": 120,
+          "w": 880,
+          "h": 110,
+          "text": "Noticia",
           "bg": "",
           "color": "#101828",
           "fs": 52,
