@@ -1,0 +1,195 @@
+{
+  "title": "Mi sitio",
+  "pages": [
+    {
+      "id": "inicio",
+      "name": "Inicio",
+      "bg": "#ffffff",
+      "boxes": [
+        {
+          "id": "8qtn6o",
+          "x": 60,
+          "y": 70,
+          "w": 880,
+          "h": 120,
+          "text": "ola como estan pendejos",
+          "bg": "",
+          "color": "#101828",
+          "fs": 64,
+          "r": 0,
+          "align": "left",
+          "bold": 1,
+          "img": "",
+          "link": null
+        },
+        {
+          "id": "66swo3",
+          "x": 50,
+          "y": 225,
+          "w": 720,
+          "h": 90,
+          "text": "Haz clic en cualquier recuadro para escribir. Arrástralo desde ✥ y cámbiale el tamaño desde la esquina.",
+          "bg": "",
+          "color": "#5b6575",
+          "fs": 22,
+          "r": 0,
+          "align": "left",
+          "bold": 0,
+          "img": "",
+          "link": null
+        },
+        {
+          "id": "yny4pi",
+          "x": 60,
+          "y": 330,
+          "w": 280,
+          "h": 200,
+          "text": "Noticia de ejemplo\nHaz clic aquí para ver su página interna.",
+          "bg": "#e8efff",
+          "color": "#101828",
+          "fs": 20,
+          "r": 16,
+          "align": "left",
+          "bold": 0,
+          "img": "",
+          "link": {
+            "k": "p",
+            "v": "noticia"
+          }
+        },
+        {
+          "id": "pv6c21",
+          "x": 360,
+          "y": 330,
+          "w": 280,
+          "h": 200,
+          "text": "Otro recuadro\nCámbiale el color, el texto y el enlace.",
+          "bg": "#ffeede",
+          "color": "#101828",
+          "fs": 20,
+          "r": 16,
+          "align": "left",
+          "bold": 0,
+          "img": "",
+          "link": null
+        },
+        {
+          "id": "gct844",
+          "x": 660,
+          "y": 330,
+          "w": 280,
+          "h": 200,
+          "text": "Aquí puede ir una imagen",
+          "bg": "#dfe4ea",
+          "color": "#101828",
+          "fs": 20,
+          "r": 16,
+          "align": "center",
+          "bold": 0,
+          "img": "",
+          "link": null
+        }
+      ]
+    },
+    {
+      "id": "noticia",
+      "name": "Noticia de ejemplo",
+      "bg": "#ffffff",
+      "boxes": [
+        {
+          "id": "v4qpo6",
+          "x": 60,
+          "y": 40,
+          "w": 200,
+          "h": 50,
+          "text": "← Volver al inicio",
+          "bg": "#101828",
+          "color": "#ffffff",
+          "fs": 16,
+          "r": 10,
+          "align": "center",
+          "bold": 0,
+          "img": "",
+          "link": {
+            "k": "p",
+            "v": "inicio"
+          }
+        },
+        {
+          "id": "94obai",
+          "x": 60,
+          "y": 120,
+          "w": 880,
+          "h": 110,
+          "text": "Título de la noticia",
+          "bg": "",
+          "color": "#101828",
+          "fs": 52,
+          "r": 0,
+          "align": "left",
+          "bold": 1,
+          "img": "",
+          "link": null
+        },
+        {
+          "id": "kyx0xg",
+          "x": 60,
+          "y": 250,
+          "w": 760,
+          "h": 260,
+          "text": "Escribe aquí el contenido completo. Cada página interna se edita igual que el inicio.",
+          "bg": "",
+          "color": "#101828",
+          "fs": 20,
+          "r": 0,
+          "align": "left",
+          "bold": 0,
+          "img": "",
+          "link": null
+        }
+      ]
+    },
+    {
+      "id": "noticia-wcqlkw",
+      "name": "Noticia",
+      "bg": "#ffffff",
+      "boxes": [
+        {
+          "id": "2pmdht",
+          "x": 60,
+          "y": 40,
+          "w": 200,
+          "h": 50,
+          "text": "← Volver al inicio",
+          "bg": "#101828",
+          "color": "#ffffff",
+          "fs": 16,
+          "r": 10,
+          "align": "center",
+          "bold": 0,
+          "img": "",
+          "link": {
+            "k": "p",
+            "v": "inicio"
+          }
+        },
+        {
+          "id": "f9tgsr",
+          "x": 60,
+          "y": 120,
+          "w": 880,
+          "h": 110,
+          "text": "XDDDDDD\n\n",
+          "bg": "",
+          "color": "#101828",
+          "fs": 52,
+          "r": 0,
+          "align": "left",
+          "bold": 1,
+          "img": "",
+          "link": null
+        }
+      ]
+    }
+  ]
+}
