@@ -22,25 +22,31 @@ a.box:hover{transform:translateY(-3px)}
 .editing .bt{overflow:auto;cursor:text}
 .editing .bt:empty::before{content:attr(data-ph);opacity:.45}
 .hd,.rz{display:none;position:absolute;background:#2563eb;color:#fff;touch-action:none;z-index:2}
-.hd{top:-28px;left:0;padding:4px 10px;border-radius:6px 6px 0 0;font:12px system-ui,sans-serif;cursor:grab}
-.rz{right:-10px;bottom:-10px;width:20px;height:20px;border-radius:50%;cursor:nwse-resize}
+.hd{top:-40px;left:0;padding:9px 16px;border-radius:10px 10px 0 0;font:600 15px system-ui,sans-serif;cursor:grab;white-space:nowrap}
+.rz{right:-16px;bottom:-16px;width:32px;height:32px;border-radius:50%;cursor:nwse-resize;border:3px solid #fff}
 .box.sel .hd,.box.sel .rz{display:block}
-#bar,#pb,#panel{position:fixed;left:0;right:0;z-index:20;font:13px system-ui,sans-serif;display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:8px 12px}
+#bar,#pb,#panel{position:fixed;left:0;right:0;z-index:20;font:15px system-ui,sans-serif;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px}
 #bar{top:0;background:#101828;color:#fff;justify-content:space-between;padding-top:calc(8px + env(safe-area-inset-top,0))}
 #pb{background:#f1f3f7;color:#101828;border-bottom:1px solid #d9dde5}
-#panel{bottom:0;background:#fff;color:#101828;border-top:1px solid #d9dde5;max-height:42vh;overflow:auto;padding-bottom:calc(8px + env(safe-area-inset-bottom,0));box-shadow:0 -4px 14px rgba(0,0,0,.08)}
+#panel{bottom:0;background:#fff;color:#101828;border-top:1px solid #d9dde5;max-height:46vh;overflow:auto;padding-bottom:calc(8px + env(safe-area-inset-bottom,0));box-shadow:0 -4px 14px rgba(0,0,0,.08)}
 #bar[hidden],#pb[hidden],#panel[hidden]{display:none}
-button{font:13px system-ui,sans-serif;cursor:pointer;border:1px solid #c5cad5;background:#fff;color:#101828;border-radius:6px;padding:5px 10px}
+button{font:15px system-ui,sans-serif;cursor:pointer;border:1px solid #c5cad5;background:#fff;color:#101828;border-radius:8px;padding:9px 14px;min-height:42px}
 button.on{background:#2563eb;color:#fff;border-color:#2563eb}
 button.pri{background:#2563eb;color:#fff;border:0;font-weight:600}
 button.dng{color:#b42318}
 #bar button.sec{background:transparent;color:#fff;border-color:#fff}
 button:focus-visible,a:focus-visible{outline:2px solid #2563eb;outline-offset:2px}
 .lb{display:flex;align-items:center;gap:5px;padding:2px 8px 2px 0;color:#4b5563}
-.lb input[type=color]{width:34px;height:28px;padding:0;border:1px solid #c5cad5;border-radius:6px;background:none}
+.lb input[type=color]{width:50px;height:40px;padding:0;border:1px solid #c5cad5;border-radius:6px;background:none}
 .lb input[type=range]{width:90px}
 .lb select{font:13px system-ui,sans-serif;padding:4px;border-radius:6px;max-width:170px}
 .sp{flex:1}
+.tip{width:100%;background:#eef4ff;color:#1e3a8a;padding:9px 13px;border-radius:8px}
+.grp{border:1px solid #d9dde5;border-radius:10px;padding:7px 10px 9px;background:#fafbfd}
+.gt{font-weight:700;font-size:13px;color:#4b5563;margin-bottom:5px}
+.gr{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#help{max-width:560px;font-size:17px;line-height:1.55}
+#help ol{padding-left:22px;margin:10px 0}#help li{margin:7px 0}
 dialog{max-width:440px;width:92%;border:1px solid #d9dde5;border-radius:12px;font:15px/1.5 system-ui,sans-serif}
 dialog label{display:block;margin-top:10px;font-size:13px;color:#5b6575}
 dialog input{width:100%;padding:8px;border:1px solid #c5cad5;border-radius:6px;font:15px system-ui,sans-serif}
@@ -48,7 +54,7 @@ dialog input{width:100%;padding:8px;border:1px solid #c5cad5;border-radius:6px;f
 </style>
 </head>
 <body>
-<div id="bar" hidden><span id="status">Modo edición</span><span><button class="pri" id="save">Publicar cambios</button> <button class="sec" id="exit">Salir</button></span></div>
+<div id="bar" hidden><span id="status">Modo edición</span><span><button class="sec" id="undo">↶ Deshacer</button> <button class="sec" id="helpBtn">❓ Ayuda</button> <button class="pri" id="save">💾 Guardar y publicar</button> <button class="sec" id="exit">Salir</button></span></div>
 <div id="pb" hidden></div>
 <div id="stage"></div>
 <div id="panel" hidden></div>
@@ -56,7 +62,7 @@ dialog input{width:100%;padding:8px;border:1px solid #c5cad5;border-radius:6px;f
 
 <dialog id="login">
   <h3 style="margin-top:0">Acceso de administrador</h3>
-  <p style="margin:0;color:#5b6575">Los datos solo se guardan en este navegador. Pega el token que creaste en GitHub.</p>
+  <p style="margin:0;color:#5b6575">Pega aquí la clave especial (token) que te dieron. Se guarda solo en este aparato, así la próxima vez entras sin escribirla.</p>
   <label>Repositorio (usuario/nombre)<input id="repo" placeholder="tuusuario/mi-sitio"></label>
   <label>Rama<input id="branch" value="main"></label>
   <label>Token de GitHub<input id="token" type="password" autocomplete="off"></label>
@@ -64,6 +70,21 @@ dialog input{width:100%;padding:8px;border:1px solid #c5cad5;border-radius:6px;f
   <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
     <button id="cancelLogin">Cancelar</button><button class="pri" id="doLogin">Entrar</button>
   </div>
+</dialog>
+
+<dialog id="help">
+  <h2 style="margin-top:0">¿Cómo se edita?</h2>
+  <ol>
+    <li><b>Cambiar un texto:</b> toca el recuadro y escribe encima.</li>
+    <li><b>Mover un recuadro:</b> tócalo y arrastra la etiqueta azul «✋ Agarrar aquí», o usa las flechas ◀ ▲ ▼ ▶ del panel de abajo.</li>
+    <li><b>Hacerlo más grande o pequeño:</b> botones ➖ y ➕ del panel, o arrastra el círculo azul de la esquina.</li>
+    <li><b>Colores y letra:</b> con el recuadro tocado, usa los cuadros de color y los botones A− y A+.</li>
+    <li><b>Agregar cosas nuevas:</b> botones azules de arriba a la derecha (＋ Texto, ＋ Recuadro, ＋ Foto).</li>
+    <li><b>Que un recuadro abra otra página:</b> en el panel, «Al tocar, ir a».</li>
+    <li><b>Si te equivocas:</b> pulsa <b>↶ Deshacer</b> arriba.</li>
+    <li><b>Al terminar:</b> pulsa <b>💾 Guardar y publicar</b>. Sin esto, nadie ve los cambios.</li>
+  </ol>
+  <div style="text-align:right"><button class="pri" id="closeHelp">Entendido</button></div>
 </dialog>
 
 <script>
@@ -95,6 +116,16 @@ const btn = (l, fn, c) => { const b = el("button", c, l); b.type = "button"; b.o
 const snap = v => Math.round(v / 5) * 5, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const plainPaste = e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); };
 const setStatus = t => $("#status").textContent = t;
+const hist = []; let last = "", tmr = 0;
+const snapJ = () => JSON.stringify(data);
+function commit(){ clearTimeout(tmr); const j = snapJ(); if (j !== last){ hist.push(last); if (hist.length > 40) hist.shift(); last = j; } }
+function touch(){ dirty = !0; clearTimeout(tmr); tmr = setTimeout(commit, 700); }
+function undo(){
+  commit(); if (!hist.length) return setStatus("No hay nada que deshacer.");
+  data = JSON.parse(hist.pop()); last = snapJ(); dirty = !0;
+  if (!data.pages.some(p => p.id === cur)) cur = data.pages[0].id;
+  render(); setStatus("↶ Listo, se deshizo el último cambio.");
+}
 
 /* ---------- dibujar ---------- */
 function layout(){
@@ -120,9 +151,9 @@ function boxEl(b){
   const t = el("div", "bt", b.text || "");
   if (editing){
     t.contentEditable = true; t.dataset.ph = "Escribe aquí"; t.onpaste = plainPaste;
-    t.oninput = () => { b.text = t.innerText; dirty = true; };
+    t.oninput = () => { b.text = t.innerText; touch(); };
     e.onpointerdown = () => { if (sel !== b.id) select(b.id); };
-    const h = el("div", "hd", "✥ mover"), r = el("div", "rz");
+    const h = el("div", "hd", "✋ Agarrar aquí para mover"), r = el("div", "rz");
     h.onpointerdown = ev => drag(ev, b, e, "m"); r.onpointerdown = ev => drag(ev, b, e, "r");
     e.append(t, h, r);
   } else e.appendChild(t);
@@ -161,7 +192,7 @@ function drag(ev, b, e, mode){
     else { if (!b.full) b.w = snap(clamp(o.w + dx, 40, 1000 - b.x)); b.h = snap(Math.max(30, o.h + dy)); }
     sty(e, b); fit();
   };
-  const up = () => { removeEventListener("pointermove", mv); removeEventListener("pointerup", up); dirty = true; };
+  const up = () => { removeEventListener("pointermove", mv); removeEventListener("pointerup", up); touch(); };
   addEventListener("pointermove", mv); addEventListener("pointerup", up);
 }
 
@@ -173,73 +204,80 @@ function slug(n){
 }
 function pageBar(){
   const pb = $("#pb"); pb.innerHTML = "";
+  pb.appendChild(el("b", null, "Páginas:"));
   data.pages.forEach(p => pb.appendChild(btn(p.name, () => { cur = p.id; sel = null; render(); scrollTo(0, 0); }, p.id === cur ? "on" : "")));
-  pb.append(btn("+ Página", () => {
-    const n = prompt("Nombre de la página nueva", "Noticia"); if (!n) return;
+  pb.append(btn("＋ Nueva página", () => {
+    const n = prompt("¿Cómo se llamará la página nueva?", "Noticia"); if (!n) return;
     const id = slug(n);
     data.pages.push({id, name:n, bg:"#ffffff", boxes:[
-      mk({x:60,y:40,w:200,h:50,text:"← Volver al inicio",bg:"#101828",color:"#ffffff",fs:16,r:10,align:"center",link:{k:"p",v:data.pages[0].id}}),
-      mk({x:60,y:120,w:880,h:110,text:n,fs:52,bold:1})]});
-    cur = id; sel = null; dirty = true; render();
-  }), btn("✎ Renombrar", () => { const n = prompt("Nuevo nombre", pg().name); if (n){ pg().name = n; dirty = true; pageBar(); } }),
+      mk({x:60,y:40,w:240,h:56,text:"← Volver al inicio",bg:"#101828",color:"#ffffff",fs:18,r:10,align:"center",link:{k:"p",v:data.pages[0].id}}),
+      mk({x:60,y:130,w:880,h:110,text:n,fs:52,bold:1})]});
+    cur = id; sel = null; touch(); render();
+  }), btn("✎ Cambiar nombre", () => { const n = prompt("Nuevo nombre de esta página", pg().name); if (n){ pg().name = n; touch(); pageBar(); } }),
   btn("🗑 Borrar página", () => {
     if (pg() === data.pages[0]) return alert("La primera página no se puede borrar.");
-    if (confirm("¿Borrar la página «" + pg().name + "» con todo su contenido?")){ data.pages = data.pages.filter(p => p.id !== cur); cur = data.pages[0].id; dirty = true; render(); }
-  }, "dng"), btn("Título de la pestaña", () => { const n = prompt("Título del sitio", data.title); if (n){ data.title = n; dirty = true; document.title = n; } }));
+    if (confirm("¿Borrar la página «" + pg().name + "» con todo su contenido?")){ data.pages = data.pages.filter(p => p.id !== cur); cur = data.pages[0].id; touch(); render(); }
+  }, "dng"), btn("🏷 Título del navegador", () => { const n = prompt("Título que aparece en la pestaña del navegador", data.title); if (n){ data.title = n; touch(); document.title = n; } }));
   pb.appendChild(el("span", "sp"));
+  pb.appendChild(el("b", null, "Agregar:"));
   const add = (l, o) => pb.appendChild(btn(l, () => {
     const st = $("#stage"), y = Math.max(20, snap((innerHeight * .35 - st.getBoundingClientRect().top) / k));
-    const b = mk({y, x:60 + (pg().boxes.length % 6) * 20, ...o}); pg().boxes.push(b); dirty = true; sel = b.id; render();
+    const b = mk({y, x:60 + (pg().boxes.length % 6) * 20, ...o}); pg().boxes.push(b); touch(); sel = b.id; render();
   }, "pri"));
-  add("+ Texto", {w:500, h:80, text:"Escribe aquí", fs:24});
-  add("+ Recuadro", {w:300, h:200, text:"Título\nDescripción breve.", bg:"#e8efff", r:16});
-  add("+ Imagen", {w:360, h:240, bg:"#dfe4ea", r:12});
+  add("＋ Texto", {w:500, h:80, text:"Escribe aquí", fs:24});
+  add("＋ Recuadro de color", {w:300, h:200, text:"Título\nDescripción breve.", bg:"#e8efff", r:16});
+  add("＋ Foto", {w:360, h:240, bg:"#dfe4ea", r:12});
   document.body.style.paddingTop = ($("#bar").offsetHeight + pb.offsetHeight) + "px";
   pb.style.top = $("#bar").offsetHeight + "px";
 }
 const lab = (t, ...c) => { const l = el("label", "lb"); l.append(t + " ", ...c); return l; };
 const colorIn = (v, fn) => { const i = el("input"); i.type = "color"; i.value = v; i.oninput = () => fn(i.value); return i; };
 const range = (a, z, v, fn) => { const i = el("input"); i.type = "range"; i.min = a; i.max = z; i.value = v; i.oninput = () => fn(+i.value); return i; };
+const grp = (t, ...c) => { const g = el("div", "grp"), r = el("div", "gr"); r.append(...c); g.append(el("div", "gt", t), r); return g; };
 function panel(){
   const p = $("#panel"); p.innerHTML = "";
   const b = pg().boxes.find(x => x.id === sel);
   if (!b){
     const pu = el("input"); pu.type = "file"; pu.accept = "image/*"; pu.hidden = true; pu.onchange = () => uploadImage(pu.files[0], pg());
-    p.append(lab("Color de fondo de la página", colorIn(pg().bg || "#ffffff", v => { pg().bg = v; dirty = true; applyBg(); })),
-      btn("Subir foto de fondo", () => pu.click()), pu,
-      btn("Foto de fondo por dirección", () => { const u = prompt("Dirección de la imagen (https://…)", pg().img || ""); if (u !== null){ pg().img = u.trim(); pg().img_p = null; dirty = true; applyBg(); panel(); } }));
-    if (pg().img) p.append(btn("Quitar foto de fondo", () => { pg().img = ""; pg().img_p = null; dirty = true; applyBg(); panel(); }));
-    p.append(el("span", null, "Toca un recuadro para editarlo. Se mueve desde ✥ y se agranda desde el círculo de la esquina."));
+    const items = [lab("Color", colorIn(pg().bg || "#ffffff", v => { pg().bg = v; touch(); applyBg(); })),
+      btn("🖼 Subir foto de fondo", () => pu.click()), pu,
+      btn("Foto de fondo por dirección web", () => { const u = prompt("Dirección de la imagen (https://…)", pg().img || ""); if (u !== null){ pg().img = u.trim(); pg().img_p = null; touch(); applyBg(); panel(); } })];
+    if (pg().img) items.push(btn("Quitar foto de fondo", () => { pg().img = ""; pg().img_p = null; touch(); applyBg(); panel(); }));
+    p.append(el("div", "tip", "👆 Toca cualquier recuadro para editarlo. Aquí abajo puedes cambiar el fondo de toda la página."), grp("Fondo de la página", ...items));
   } else {
-    const re = () => { sty(document.querySelector(`[data-id="${b.id}"]`), b); dirty = true; fit(); };
+    const re = () => { sty(document.querySelector(`[data-id="${b.id}"]`), b); touch(); fit(); };
+    const bt = (l, fn, t, c) => { const x = btn(l, () => { fn(); re(); panel(); }, c || ""); if (t) x.title = t; return x; };
+    const move = (dx, dy, l) => bt(l, () => { if (!b.full) b.x = snap(clamp(b.x + dx, 0, 1000 - b.w)); b.y = Math.max(0, b.y + dy); }, "Mover");
+    const scale = v => () => { if (!b.full) b.w = snap(clamp(b.w * v, 40, 1000 - b.x)); b.h = snap(Math.max(30, b.h * v)); };
     const sw = document.createElement("select");
-    sw.add(new Option("Sin enlace", ""));
-    data.pages.forEach(q => sw.add(new Option("Ir a: " + q.name, "p:" + q.id)));
-    sw.add(new Option(b.link && b.link.k === "u" ? "Web: " + b.link.v : "Dirección web…", "u"));
+    sw.add(new Option("Nada (solo se ve)", ""));
+    data.pages.forEach(q => sw.add(new Option("Ir a la página: " + q.name, "p:" + q.id)));
+    sw.add(new Option(b.link && b.link.k === "u" ? "Abrir web: " + b.link.v : "Abrir una dirección web…", "u"));
     sw.value = !b.link ? "" : b.link.k === "u" ? "u" : "p:" + b.link.v;
     sw.onchange = () => {
       if (sw.value === "") b.link = null;
       else if (sw.value === "u"){ const u = prompt("Dirección web (https://…)", b.link && b.link.k === "u" ? b.link.v : "https://"); if (u) b.link = {k:"u", v:u.trim()}; }
       else b.link = {k:"p", v:sw.value.slice(2)};
-      dirty = true; panel();
+      touch(); panel();
     };
-    const ab = (v, l) => btn(l, () => { b.align = v; re(); panel(); }, b.align === v ? "on" : "");
-    p.append(
-      lab("Fondo", colorIn(b.bg || "#e8efff", v => { b.bg = v; re(); }), btn("Sin fondo", () => { b.bg = ""; re(); })),
-      lab("Texto", colorIn(b.color, v => { b.color = v; re(); })),
-      lab("Letra", range(10, 90, b.fs, v => { b.fs = v; re(); })),
-      lab("Esquinas", range(0, 60, b.r, v => { b.r = v; re(); })),
-      ab("left", "⇤"), ab("center", "↔"), ab("right", "⇥"),
-      btn("N", () => { b.bold = b.bold ? 0 : 1; re(); panel(); }, b.bold ? "on" : ""),
-      lab("Al hacer clic", sw));
     const up = el("input"); up.type = "file"; up.accept = "image/*"; up.hidden = true; up.onchange = () => uploadImage(up.files[0], b);
-    p.append(btn("Subir foto", () => up.click()), up, btn("Foto por dirección", () => {
+    const al = (v, l) => bt(l, () => { b.align = v; }, "Alinear el texto", b.align === v ? "on" : "");
+    const foto = [btn("📷 Subir foto", () => up.click()), up, btn("Foto por dirección web", () => {
       const u = prompt("Dirección de la imagen (https://…)", b.img || ""); if (u !== null){ b.img = u.trim(); b.img_p = null; re(); }
-    }));
-    if (b.img) p.append(btn("Quitar foto", () => { b.img = ""; b.img_p = null; re(); }));
-    p.append(btn("Ancho completo", () => { b.full = !b.full; re(); panel(); }, b.full ? "on" : ""), btn("Duplicar", () => { const c = {...JSON.parse(JSON.stringify(b)), id:uid(), x:b.x + 20, y:b.y + 20}; pg().boxes.push(c); sel = c.id; dirty = true; render(); }),
-      btn("Al frente", () => { const a = pg().boxes; a.push(a.splice(a.indexOf(b), 1)[0]); dirty = true; render(); }),
-      btn("Borrar", () => { pg().boxes = pg().boxes.filter(x => x !== b); sel = null; dirty = true; render(); }, "dng"));
+    })];
+    if (b.img) foto.push(bt("Quitar foto", () => { b.img = ""; b.img_p = null; }));
+    p.append(el("div", "tip", "✏ Recuadro elegido. Toca dentro y escribe para cambiar el texto. Con los botones de abajo lo mueves, cambias colores o le pones un enlace."),
+      grp("Letra", bt("A−", () => { b.fs = clamp(b.fs - 2, 10, 90); }, "Letra más pequeña"), el("b", null, b.fs), bt("A+", () => { b.fs = clamp(b.fs + 2, 10, 90); }, "Letra más grande"),
+        bt("Negrita", () => { b.bold = b.bold ? 0 : 1; }, "Negrita", b.bold ? "on" : ""), al("left", "⇤ Izq."), al("center", "↔ Centro"), al("right", "Der. ⇥")),
+      grp("Colores", lab("Recuadro", colorIn(b.bg || "#e8efff", v => { b.bg = v; re(); })), bt("Transparente", () => { b.bg = ""; }), lab("Letra", colorIn(b.color, v => { b.color = v; re(); }))),
+      grp("Tamaño y forma", bt("➖ Más pequeño", scale(.9)), bt("➕ Más grande", scale(1.1)), bt("Menos redondo", () => { b.r = clamp(b.r - 4, 0, 60); }), bt("Más redondo", () => { b.r = clamp(b.r + 4, 0, 60); }),
+        bt("Ancho completo", () => { b.full = !b.full; }, "Ocupar todo el ancho de la pantalla", b.full ? "on" : "")),
+      grp("Posición", move(-10, 0, "◀"), move(0, -10, "▲"), move(0, 10, "▼"), move(10, 0, "▶"),
+        bt("Traer adelante", () => { const a = pg().boxes; a.push(a.splice(a.indexOf(b), 1)[0]); render(); }, "Ponerlo encima de los demás")),
+      grp("Al tocar, ir a", sw),
+      grp("Foto del recuadro", ...foto),
+      grp("Más", btn("📄 Copiar recuadro", () => { const c = {...JSON.parse(JSON.stringify(b)), id:uid(), x:b.x + 20, y:b.y + 20}; pg().boxes.push(c); sel = c.id; touch(); render(); }),
+        btn("🗑 Borrar recuadro", () => { if (confirm("¿Borrar este recuadro?")){ pg().boxes = pg().boxes.filter(x => x !== b); sel = null; touch(); render(); } }, "dng")));
   }
   document.body.style.paddingBottom = (p.offsetHeight + 16) + "px";
 }
@@ -263,7 +301,7 @@ $("#save").onclick = async () => {
   try{
     const json = JSON.stringify(data, (key, v) => (String(key).endsWith("_p") || String(key)[0] === "_") ? undefined : v, 2);
     await put("content.json", b64(json), "Actualizar contenido desde el editor");
-    dirty = false; setStatus("Publicado. Se verá en el sitio en 1 o 2 minutos.");
+    dirty = false; setStatus("✅ Guardado. En 1 o 2 minutos lo verán todos los visitantes.");
   }catch(e){ setStatus("Error al guardar: " + e.message); }
 };
 function uploadImage(file, b){
@@ -274,7 +312,7 @@ function uploadImage(file, b){
     try{
       const name = "images/" + Date.now() + "-" + file.name.replace(/[^\w.\-]/g, "_");
       await put(name, rd.result.split(",")[1], "Subir imagen");
-      b.img = name; b.img_p = rd.result; dirty = true;
+      b.img = name; b.img_p = rd.result; touch();
       if (b.boxes) applyBg(); else sty(document.querySelector(`[data-id="${b.id}"]`), b);
       panel(); setStatus("Imagen subida. Pulsa Publicar cambios para guardar.");
     }catch(e){ setStatus("Error al subir: " + e.message); }
@@ -287,7 +325,13 @@ function guess(){
   const h = location.hostname, p = location.pathname.split("/")[1];
   return h.endsWith(".github.io") ? h.split(".")[0] + "/" + (p || h) : "";
 }
-function startEdit(){ editing = true; sel = null; setStatus("Modo edición"); render(); scrollTo(0, 0); }
+function startEdit(){
+  editing = true; sel = null; hist.length = 0; last = snapJ(); setStatus("Modo edición"); render(); scrollTo(0, 0);
+  if (!localStorage.getItem("seenHelp")){ localStorage.setItem("seenHelp", "1"); $("#help").showModal(); }
+}
+$("#undo").onclick = undo;
+$("#helpBtn").onclick = () => $("#help").showModal();
+$("#closeHelp").onclick = () => $("#help").close();
 function openLogin(){
   const c = cfgGet() || {};
   $("#repo").value = c.repo || guess(); $("#branch").value = c.branch || "main"; $("#token").value = c.token || "";
